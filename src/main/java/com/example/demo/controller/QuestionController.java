@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.CreateQuestionInfo;
 import com.example.demo.dto.DeleteQuestionInfo;
 import com.example.demo.dto.MatchInfo;
+import com.example.demo.dto.Message;
 import com.example.demo.dto.UpdateQuestionInfo;
 import com.example.demo.dto.UpdateQuestionStatusInfo;
 import com.example.demo.exception.ServiceException;
@@ -37,6 +39,7 @@ import com.example.demo.model.Types;
 import com.example.demo.service.QuestionService;
 import com.google.gson.Gson;
 
+
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 //create a new question
@@ -46,6 +49,7 @@ public class QuestionController {
 	QuestionService questionService;
 
 	@PostMapping("/add")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> addQuestion(@RequestBody CreateQuestionInfo createQuestionInfo) throws Exception {
 		String errorResult = null;
 		Question question = null;
@@ -68,6 +72,7 @@ public class QuestionController {
 
 //fetch questions whose status is active
 	@GetMapping("/activated")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> viewActivatedQuestion(@RequestParam(defaultValue = "0") Integer pageNo, 
             @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(defaultValue = "id")String sortBy)throws Exception {
@@ -77,15 +82,18 @@ public class QuestionController {
 		try {
 			activatedQuestions = questionService.getactivatedQuestions(pageNo, pageSize, sortBy);
 		} catch (ServiceException e) {
+			
 			result = e.getMessage();
 		}
 		if (activatedQuestions != null) {
 			return new ResponseEntity<>(activatedQuestions, HttpStatus.OK);
 		} else {
+			Message message=new Message(result);
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 	}
 	@GetMapping("/match")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> getMatch(@RequestParam int qid) throws Exception {
 		String result = null;
 		List<Match> match=null;
@@ -101,6 +109,7 @@ public class QuestionController {
 		}
 	}
 	@GetMapping("/bestchoice")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> getBestChoice(@RequestParam int qid) throws Exception {
 		String result = null;
 		List<BestChoice> bestChoice=null;
@@ -116,6 +125,7 @@ public class QuestionController {
 		}
 	}
 	@GetMapping("/multiplechoice")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> getMultipleChoice(@RequestParam int qid) throws Exception {
 		String result = null;
 		List<MultipleChoice> multipleChoice=null;
@@ -132,6 +142,7 @@ public class QuestionController {
 	}
 	
 	@GetMapping("/levels")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> getLevels() throws Exception {
 		String errorResult = null;
 		List<Level> levels = null;
@@ -148,6 +159,7 @@ public class QuestionController {
 		}
 	}
 	@GetMapping("/types")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> getTypes() throws Exception {
 		String errorResult = null;
 		List<Types> types = null;
@@ -166,6 +178,7 @@ public class QuestionController {
 
 //fetch questions whose status is deactive
 	@GetMapping("/deactivated")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> viewDeactivatedQuestion(@RequestParam(defaultValue = "0") Integer pageNo, 
             @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(defaultValue = "id")String sortBy) throws Exception {
@@ -185,6 +198,7 @@ public class QuestionController {
 	}
 //update question details for a particular question
 	@PutMapping("/edit")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> editQuestion(@RequestBody UpdateQuestionInfo updateQuestionInfo)throws Exception{
 		String updateResult=null;
 		String errorResult=null;
@@ -204,6 +218,7 @@ public class QuestionController {
 
 //update status based on ids(applicable for single and bulk update)
 	@PutMapping("/updatestatus")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> update(@RequestBody UpdateQuestionStatusInfo updateQuestionStatusInfo) throws Exception {
 		String updateStatusResult = null;
 		String errorResult = null;
@@ -223,6 +238,7 @@ public class QuestionController {
 
 //delete question based on set of ids(applicable for single and bulk delete)
 	@DeleteMapping("/delete")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> deleteQuestion(@RequestBody DeleteQuestionInfo deleteQuestionInfo) throws Exception {
 		String deleteResult = null;
 		String errorResult = null;
@@ -238,6 +254,7 @@ public class QuestionController {
 
 //search question based on tags
 	@GetMapping("/basedontags")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> getQuestionBasedOnTags(@RequestParam String tagName,@RequestParam String status,
 			@RequestParam(defaultValue = "0") Integer pageNo, 
             @RequestParam(defaultValue = "10") Integer pageSize,
@@ -261,6 +278,7 @@ public class QuestionController {
 
 //get question details based on id
 	@GetMapping("/")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> getQuestion(@RequestParam int id) throws Exception {
 		String errorResult = null;
 		Optional<Question> question = null;
@@ -278,6 +296,7 @@ public class QuestionController {
 		}
 	}
 	@GetMapping("/categories")
+	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
 		public ResponseEntity<?> getCategories() throws Exception {
 			String errorResult = null;
 			List<Category> categories = null;
