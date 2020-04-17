@@ -1,0 +1,22 @@
+Table of Contents
+1. Get Question By Status
+2. Delete Question By QuestionId
+3. Create Question
+4. Update Question as active/inactive(status=true/false) based on Question Id
+1. Get Question By Status
+TIP:Here status true returns active question.
+
+request
+{snippets}/question/getLevels/http-request.adoc
+
+Response
+{snippets}/question/getLevels/http-response.adoc
+
+CURL
+{snippets}/question/getLevels/curl-request.adoc
+
+request-body
+{snippets}/question/getLevels/request-body.adoc
+
+response-body
+{snippets}/question/getLevels/response-body.adoc

@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.model.Level;
 
 @Repository
-public interface LevelDAO extends JpaRepository<Level,Integer>{
+public interface LevelDAO extends JpaRepository<Level, Integer> {
 
 }

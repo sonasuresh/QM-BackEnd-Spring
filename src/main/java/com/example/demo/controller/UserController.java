@@ -2,8 +2,6 @@ package com.example.demo.controller;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +25,15 @@ import com.example.demo.model.Level;
 import com.example.demo.model.Question;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
+
 //
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/users")
 public class UserController {
-	@Autowired 
+	@Autowired
 	UserService userService;
+
 	@GetMapping("/")
 	public ResponseEntity<?> getAllUsers() throws Exception {
 		String errorResult = null;
@@ -50,57 +50,36 @@ public class UserController {
 			return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
 		}
 	}
-//	@PostMapping("/login")
-//		public ResponseEntity<?> login(@RequestBody AddUserInfo addUserInfo) throws Exception {
-//			String errorResult = null;
-//			boolean successmessage = false;
-//			
-//			
-//			try {
-//				
-//				successmessage =userService.login(addUserInfo);
-//			} catch (ServiceException e) {
-//				errorResult = e.getMessage();
-//				return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
-//			}
-//			if (successmessage) {
-//				 return new ResponseEntity<>(successmessage, HttpStatus.OK);
-//			} else{
-//
-//				return new ResponseEntity<>(successmessage, HttpStatus.UNAUTHORIZED);
-//			}
-//
-//		}
+
 	@PostMapping("/add")
-	@PreAuthorize ("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> addUser(@RequestBody AddUserInfo addUserInfo) throws Exception {
 		String errorResult = null;
 		AuthenticationRequest user = null;
-		
-		
+
 		try {
-			
-			user =userService.addUser(addUserInfo);
+
+			user = userService.addUser(addUserInfo);
 		} catch (ServiceException e) {
 			errorResult = e.getMessage();
 		}
 		if (addUserInfo != null) {
-			 return new ResponseEntity<>(user, HttpStatus.OK);
+			return new ResponseEntity<>(user, HttpStatus.OK);
 		} else {
 
 			return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
 		}
 
 	}
-	
+
 	@PutMapping("/edit")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> editUser(@RequestBody EditUserInfo editUserInfo) throws Exception {	
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> editUser(@RequestBody EditUserInfo editUserInfo) throws Exception {
 		String user = null;
 		String errorResult = null;
 		try {
 
-			user =userService.editUser(editUserInfo);
+			user = userService.editUser(editUserInfo);
 		} catch (ServiceException e) {
 			errorResult = e.getMessage();
 		}
@@ -111,7 +90,5 @@ public class UserController {
 			return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
 		}
 	}
-	
 
-	
 }

@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.EmailMessage;
 
-
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 public class Email {
@@ -34,38 +33,34 @@ public class Email {
 	private String username;
 	@Value("${spring.mail.password}")
 	private String password;
+
 	@PostMapping("/send")
-	@PreAuthorize ("hasRole('ADMIN')")
-	public String sendEmail(@RequestBody EmailMessage emailmessage) throws AddressException, MessagingException,IOException {
+	@PreAuthorize("hasRole('ADMIN')")
+	public String sendEmail(@RequestBody EmailMessage emailmessage)
+			throws AddressException, MessagingException, IOException {
 		sendmail(emailmessage);
 		return "Email sent successfully";
 	}
-	private void sendmail(EmailMessage emailmessage) throws AddressException, MessagingException,IOException {
-		Properties props=new Properties();
-		props.put("mail.smtp.auth","true");
+
+	private void sendmail(EmailMessage emailmessage) throws AddressException, MessagingException, IOException {
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.host","smtp.gmail.com");
-		props.put("mail.smtp.port","587");
-		
-		Session session= Session.getInstance(props,
-				new javax.mail.Authenticator() {
-				 protected PasswordAuthentication getPasswordAuthentication() {
-					 return new PasswordAuthentication(username,password);
-				 }
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.port", "587");
+
+		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(username, password);
+			}
 		});
-		Message msg=new MimeMessage(session);
-		msg.setFrom(new InternetAddress(username,false));
+		Message msg = new MimeMessage(session);
+		msg.setFrom(new InternetAddress(username, false));
 		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailmessage.getTo_address()));
 		msg.setSubject(emailmessage.getSubject());
-		msg.setContent(emailmessage.getBody(),"text/html");
+		msg.setContent(emailmessage.getBody(), "text/html");
 		msg.setSentDate(new Date());
-		
-//		MimeBodyPart messageBodyPart=new MimeBodyPart();
-//		messageBodyPart.setContent(emailmessage.getBody(),"text/html");
-//		
-//		Multipart multipart=new MimeMultipart();
-//		multipart.addBodyPart(messageBodyPart);
-//		msg.setContent(multipart);
+
 		Transport.send(msg);
 	}
 }

@@ -1,13 +1,15 @@
 package com.example.demo.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,7 +41,6 @@ import com.example.demo.model.Types;
 import com.example.demo.service.QuestionService;
 import com.google.gson.Gson;
 
-
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 //create a new question
@@ -47,56 +48,58 @@ import com.google.gson.Gson;
 public class QuestionController {
 	@Autowired
 	QuestionService questionService;
+	
+
 
 	@PostMapping("/add")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> addQuestion(@RequestBody CreateQuestionInfo createQuestionInfo) throws Exception {
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> addQuestion(@RequestBody CreateQuestionInfo createQuestionInfo) {
 		String errorResult = null;
 		Question question = null;
-		
-		
+
 		try {
-			
-			question =questionService.addQuestion(createQuestionInfo);
+
+			 questionService.addQuestion(createQuestionInfo);
+			 return new ResponseEntity<>(question, HttpStatus.CREATED);
 		} catch (ServiceException e) {
 			errorResult = e.getMessage();
-		}
-		if (question != null) {
-			 return new ResponseEntity<>(question, HttpStatus.OK);
-		} else {
-
 			return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
+
 		}
+
 
 	}
 
 //fetch questions whose status is active
 	@GetMapping("/activated")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> viewActivatedQuestion(@RequestParam(defaultValue = "0") Integer pageNo, 
-            @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(defaultValue = "id")String sortBy)throws Exception {
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> viewActivatedQuestion(@RequestParam(defaultValue = "0") Integer pageNo,
+			@RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "id") String sortBy)
+			 {
 
 		String result = null;
 		Page<Question> activatedQuestions = null;
 		try {
 			activatedQuestions = questionService.getactivatedQuestions(pageNo, pageSize, sortBy);
 		} catch (ServiceException e) {
-			
+
 			result = e.getMessage();
 		}
 		if (activatedQuestions != null) {
+
 			return new ResponseEntity<>(activatedQuestions, HttpStatus.OK);
 		} else {
-			Message message=new Message(result);
+			Message message = new Message(result);
+
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 	}
+
 	@GetMapping("/match")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> getMatch(@RequestParam int qid) throws Exception {
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> getMatch(@RequestParam int qid){
 		String result = null;
-		List<Match> match=null;
+		List<Match> match = null;
 		try {
 			match = questionService.getMatches(qid);
 		} catch (ServiceException e) {
@@ -108,11 +111,12 @@ public class QuestionController {
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 	}
+
 	@GetMapping("/bestchoice")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> getBestChoice(@RequestParam int qid) throws Exception {
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> getBestChoice(@RequestParam int qid) {
 		String result = null;
-		List<BestChoice> bestChoice=null;
+		List<BestChoice> bestChoice = null;
 		try {
 			bestChoice = questionService.getBestChoice(qid);
 		} catch (ServiceException e) {
@@ -124,11 +128,12 @@ public class QuestionController {
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 	}
+
 	@GetMapping("/multiplechoice")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> getMultipleChoice(@RequestParam int qid) throws Exception {
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> getMultipleChoice(@RequestParam int qid){
 		String result = null;
-		List<MultipleChoice> multipleChoice=null;
+		List<MultipleChoice> multipleChoice = null;
 		try {
 			multipleChoice = questionService.getMultipleChoice(qid);
 		} catch (ServiceException e) {
@@ -140,10 +145,10 @@ public class QuestionController {
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@GetMapping("/levels")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> getLevels() throws Exception {
+	//@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> getLevels() {
 		String errorResult = null;
 		List<Level> levels = null;
 		try {
@@ -158,9 +163,10 @@ public class QuestionController {
 			return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
 		}
 	}
+
 	@GetMapping("/types")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> getTypes() throws Exception {
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> getTypes() {
 		String errorResult = null;
 		List<Types> types = null;
 		try {
@@ -178,10 +184,10 @@ public class QuestionController {
 
 //fetch questions whose status is deactive
 	@GetMapping("/deactivated")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> viewDeactivatedQuestion(@RequestParam(defaultValue = "0") Integer pageNo, 
-            @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(defaultValue = "id")String sortBy) throws Exception {
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> viewDeactivatedQuestion(@RequestParam(defaultValue = "0") Integer pageNo,
+			@RequestParam(defaultValue = "10") Integer pageSize, @RequestParam(defaultValue = "id") String sortBy)
+			 {
 		String result = null;
 		Page<Question> deactivatedQuestions = null;
 
@@ -196,54 +202,50 @@ public class QuestionController {
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 	}
+
 //update question details for a particular question
 	@PutMapping("/edit")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> editQuestion(@RequestBody UpdateQuestionInfo updateQuestionInfo)throws Exception{
-		String updateResult=null;
-		String errorResult=null;
-		Question question=null;
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> editQuestion(@RequestBody UpdateQuestionInfo updateQuestionInfo) throws Exception {
+		String updateResult = null;
+		String errorResult = null;
+		Question question = null;
 		try {
-			updateResult = questionService.updateQuestion(updateQuestionInfo);
-		}catch(ServiceException e) {
-			errorResult=e.getMessage();
-		}
-		if(updateResult!=null) {
-		return new ResponseEntity<>(updateResult,HttpStatus.OK);
-	}else {
+			questionService.updateQuestion(updateQuestionInfo);
+			return new ResponseEntity<>(updateResult, HttpStatus.OK);
 
-		return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
-	}
+		} catch (ServiceException e) {
+			errorResult = e.getMessage();
+			return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
+
+		}
 	}
 
 //update status based on ids(applicable for single and bulk update)
 	@PutMapping("/updatestatus")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> update(@RequestBody UpdateQuestionStatusInfo updateQuestionStatusInfo) throws Exception {
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> update(@RequestBody UpdateQuestionStatusInfo updateQuestionStatusInfo) {
 		String updateStatusResult = null;
 		String errorResult = null;
 		try {
 
-			updateStatusResult = questionService.updateQuestionStatus(updateQuestionStatusInfo);
+			questionService.updateQuestionStatus(updateQuestionStatusInfo);
+			return new ResponseEntity<>(updateStatusResult, HttpStatus.OK);
 		} catch (ServiceException e) {
 			errorResult = e.getMessage();
-		}
-		if (updateStatusResult != null) {
-			return new ResponseEntity<>(updateStatusResult, HttpStatus.OK);
-		} else {
-
 			return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
+
 		}
 	}
 
 //delete question based on set of ids(applicable for single and bulk delete)
 	@DeleteMapping("/delete")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> deleteQuestion(@RequestBody DeleteQuestionInfo deleteQuestionInfo) throws Exception {
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> deleteQuestion(@RequestBody DeleteQuestionInfo deleteQuestionInfo) {
 		String deleteResult = null;
 		String errorResult = null;
 		try {
-			deleteResult = questionService.deleteQuestion(deleteQuestionInfo);
+			questionService.deleteQuestion(deleteQuestionInfo);
 			return new ResponseEntity<>(deleteResult, HttpStatus.OK);
 		} catch (ServiceException e) {
 			errorResult = e.getMessage();
@@ -254,17 +256,15 @@ public class QuestionController {
 
 //search question based on tags
 	@GetMapping("/basedontags")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> getQuestionBasedOnTags(@RequestParam String tagName,@RequestParam String status,
-			@RequestParam(defaultValue = "0") Integer pageNo, 
-            @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(defaultValue = "id")String sortBy
-			) throws Exception {
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> getQuestionBasedOnTags(@RequestParam String tagName, @RequestParam String status,
+			@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize,
+			@RequestParam(defaultValue = "id") String sortBy){
 		String result = null;
 		Page<Question> questions = null;
 
 		try {
-			questions = questionService.getQuestionBasedOnTags(tagName,status,pageNo, pageSize, sortBy);
+			questions = questionService.getQuestionBasedOnTags(tagName, status, pageNo, pageSize, sortBy);
 		} catch (ServiceException e) {
 			result = e.getMessage();
 		}
@@ -274,18 +274,17 @@ public class QuestionController {
 			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 	}
-	
 
 //get question details based on id
 	@GetMapping("/")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-	public ResponseEntity<?> getQuestion(@RequestParam int id) throws Exception {
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> getQuestion(@RequestParam int id){
 		String errorResult = null;
 		Optional<Question> question = null;
 		try {
 
 			question = questionService.getQuestion(id);
-			
+
 		} catch (ServiceException e) {
 			errorResult = e.getMessage();
 		}
@@ -295,22 +294,23 @@ public class QuestionController {
 			return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
 		}
 	}
-	@GetMapping("/categories")
-	@PreAuthorize ("hasAnyRole('USER','ADMIN')")
-		public ResponseEntity<?> getCategories() throws Exception {
-			String errorResult = null;
-			List<Category> categories = null;
-			try {
 
-				categories = questionService.getCategories();
-			} catch (ServiceException e) {
-				errorResult = e.getMessage();
-			}
-			if (categories != null) {
-				return new ResponseEntity<>(categories, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
-			}
+	@GetMapping("/categories")
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> getCategories() {
+		String errorResult = null;
+		List<Category> categories = null;
+		try {
+
+			categories = questionService.getCategories();
+		} catch (ServiceException e) {
+			errorResult = e.getMessage();
 		}
-	
+		if (categories != null) {
+			return new ResponseEntity<>(categories, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
+		}
 	}
+
+}

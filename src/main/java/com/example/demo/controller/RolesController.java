@@ -26,12 +26,11 @@ public class RolesController {
 	@Autowired
 	private RolesService rolesService;
 
-    	
-		@GetMapping("/")
-		@PreAuthorize ("hasRole('ADMIN')")
-		public List<Roles> getRoles() throws ServiceException {
-			return rolesService.get();
-		}
+	@GetMapping("/")
+	@PreAuthorize("hasRole('ADMIN')")
+	public List<Roles> getRoles() throws ServiceException {
+		return rolesService.get();
+	}
 
 //		@GetMapping("/{id}")
 //		public Roles getRolesById(@PathVariable Long id) throws ServiceException {
@@ -60,7 +59,5 @@ public class RolesController {
 //			rolesService.delete(id);
 //			return "Role Deleted with id:" + id;
 //		}
-
-
 
 }

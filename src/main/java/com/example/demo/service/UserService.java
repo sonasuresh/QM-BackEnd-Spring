@@ -14,6 +14,7 @@ import com.example.demo.dao.UserRepository;
 import com.example.demo.dao.UserRoleDAO;
 import com.example.demo.dto.AddUserInfo;
 import com.example.demo.dto.EditUserInfo;
+import com.example.demo.exception.DBException;
 import com.example.demo.exception.ServiceException;
 import com.example.demo.model.AuthenticationRequest;
 import com.example.demo.model.Category;
@@ -32,15 +33,16 @@ public class UserService {
 	@Autowired
 	AuthenticationRequest authRequest;
 
-//	@Autowired
-//	 private BCryptPasswordEncoder bCryptPasswordEncoder;
 	public List<User> getAllUsers() throws ServiceException {
 		List<User> users;
-		users = usersDAO.findAllUsers();
-		if (users == null) {
+		try {
+			users = usersDAO.findAllUsers();
+			return users;
+
+		} catch (DBException e) {
 			throw new ServiceException("Unable to fetch users");
+
 		}
-		return users;
 	}
 
 	public String editUser(EditUserInfo editUserInfo) throws ServiceException {
@@ -62,7 +64,6 @@ public class UserService {
 		}
 
 	}
-	
 
 	public AuthenticationRequest addUser(AddUserInfo addUserInfo) throws Exception {
 		User users = new User();
@@ -70,7 +71,7 @@ public class UserService {
 		user.setEmail(addUserInfo.getEmail());
 		user.setIsactive(true);
 		String randomUserName = RandomStringUtils.randomAlphanumeric(10);
-		String randomPassword= RandomStringUtils.randomAlphanumeric(10);
+		String randomPassword = RandomStringUtils.randomAlphanumeric(10);
 		user.setUserName(randomUserName);
 		user.setPassword(BCrypt.hashpw(randomPassword, BCrypt.gensalt()));
 		users = usersDAO.save(user);
@@ -81,35 +82,14 @@ public class UserService {
 		List<Integer> roleId = addUserInfo.getRoleId();
 		int length = roleId.size();
 		for (int i = 0; i < length; i++) {
-			user_role.setRole_Id((int)roleId.get(i));
+			user_role.setRole_Id((int) roleId.get(i));
 			System.out.print(roleId.get(i));
-			//userRoleDAO.save(user_role);
-			userRoleDAO.saveInto(userId,(int)roleId.get(i));
+			userRoleDAO.saveInto(userId, (int) roleId.get(i));
 		}
-		//Authentication authentication=new Authentication();
-//		System.out.print(randomUserName);
-//		System.out.print("pass"+ randomPassword );
 		authRequest.setUsername(randomUserName);
 		authRequest.setPassword(randomPassword);
-		//return authentication.createAuthenticateToken(randomUserName.toString(),randomPassword.toString());
 		return authRequest;
-//		if (users == null) {
-//			throw new ServiceException("Unable to add user");
-//		}
-		//return users;
+
 	}
-//public boolean login(AddUserInfo addUserInfo)throws ServiceException{
-//	Users users=new Users();
-//	String name=addUserInfo.getName();
-//	String hashedPassword = usersDAO.getHashedPassword(name);
-//	String password=addUserInfo.getPassword();
-//	if (BCrypt.checkpw(password, hashedPassword)) {
-//		return true;
-//	}
-//	else {
-//		return false;
-//	}
-//
-//	}
 
 }

@@ -7,6 +7,6 @@ import com.example.demo.model.Question;
 import com.example.demo.model.Types;
 
 @Repository
-public interface TypeDAO extends JpaRepository<Types,Integer>{
+public interface TypeDAO extends JpaRepository<Types, Integer> {
 
 }
