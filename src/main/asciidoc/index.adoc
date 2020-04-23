@@ -1,0 +1,120 @@
+= QUESTION MODULE REST DOCS 
+Getting Started With Spring REST Docs
+
+This is an example output for a service running at http://localhost:9004
+
+== Questions Module API 
+
+GET API For Levels 
+
+.Request
+include::{snippets}/getLevelsTest/http-request.adoc[]
+
+.Response
+include::{snippets}/getLevelsTest/http-response.adoc[]
+
+GET API For Match
+
+.Request
+include::{snippets}/getMatchTest/http-request.adoc[]
+
+.Response
+include::{snippets}/getMatchTest/http-response.adoc[]
+
+GET API For Question Types 
+
+.Request
+include::{snippets}/getTypesTest/http-request.adoc[]
+
+.Response
+include::{snippets}/getTypesTest/http-response.adoc[]
+
+
+GET API For Categories
+
+.Request
+include::{snippets}/getCategoriesTest/http-request.adoc[]
+
+.Response
+include::{snippets}/getCategoriesTest/http-response.adoc[]
+
+
+GET API For Multiple Choice
+
+.Request
+include::{snippets}/getMultipleChoiceTest/http-request.adoc[]
+
+.Response
+include::{snippets}/getMultipleChoiceTest/http-response.adoc[]
+
+GET API For Best Choice
+
+.Request
+include::{snippets}/getBestChoiceTest/http-request.adoc[]
+
+.Response
+include::{snippets}/getBestChoiceTest/http-response.adoc[]
+
+GET API For Question
+
+.Request
+include::{snippets}/getQuestionTest/http-request.adoc[]
+
+.Response
+include::{snippets}/getQuestionTest/http-response.adoc[]
+
+GET API For Activated Question
+
+.Request
+include::{snippets}/ViewActivatedQuestionTest/http-request.adoc[]
+
+.Response
+include::{snippets}/ViewActivatedQuestionTest/http-response.adoc[]
+
+GET API For Deactivated Question
+
+.Request
+include::{snippets}/ViewDeactivatedQuestionTest/http-request.adoc[]
+
+.Response
+include::{snippets}/ViewDeactivatedQuestionTest/http-response.adoc[]
+
+PUT API For Update Status of Question
+
+.Request
+include::{snippets}/updateQuestionsTest/http-request.adoc[]
+
+.Response
+include::{snippets}/updateQuestionsTest/http-response.adoc[]
+
+GET API For Question Based On Tags
+
+.Request
+include::{snippets}/ViewQuestionBasedonTagsTest/http-request.adoc[]
+
+.Response
+include::{snippets}/ViewQuestionBasedonTagsTest/http-response.adoc[]
+
+POST API For Create Question
+
+.Request
+include::{snippets}/addQuestionTest/http-request.adoc[]
+
+.Response
+include::{snippets}/addQuestionTest/http-response.adoc[]
+
+DELETE API For Delete Question
+
+.Request
+include::{snippets}/deleteQuestionsTest/http-request.adoc[]
+
+.Response
+include::{snippets}/deleteQuestionsTest/http-response.adoc[]
+
+PUT API For Update Details Of Question
+
+.Request
+include::{snippets}/updateQuestionTest/http-request.adoc[]
+
+.Response
+include::{snippets}/updateQuestionTest/http-response.adoc[]

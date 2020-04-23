@@ -1,0 +1,8 @@
+GET API For Organization
+
+Request
+{snippets}/getLevelsTest/http-request.adoc
+
+Response
+{snippets}/getLevelsTest/http-response.adoc
+
